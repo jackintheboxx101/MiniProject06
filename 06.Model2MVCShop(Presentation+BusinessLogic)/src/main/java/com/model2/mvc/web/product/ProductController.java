@@ -38,22 +38,22 @@ public class ProductController {
 	@Value("#{commonProperties['pageSize']}")
 	int pageSize;
 	
-	@RequestMapping("/addProductView.do")
-	public String addProductView() throws Exception{
-		System.out.println("/addProductView.do");
-		return "redirect:/product/addProductView.jsp";
-	}
+//	@RequestMapping("/addProductView.do")
+//	public String addProductView() throws Exception{
+//		System.out.println("/addProductView.do");
+//		return "redirect:/product/addProductView.jsp";
+//	}
 	
 	@RequestMapping("/addProduct.do")
 	public String addProduct(@ModelAttribute("product") Product product) throws Exception{
 		System.out.println("/addProduct.do");
 		productService.addProduct(product);
 		
-		return "redirect:/product/addProductView.jsp";
+		return "forward:/product/addProduct.jsp";
 	}
 	
 	@RequestMapping("/getProduct.do")
-	public String getProduct( @RequestParam("prodNo") int prodNo , Model model ) throws Exception {
+	public String getProduct( @RequestParam("prodNo") int prodNo , Model model, HttpServletRequest request ) throws Exception {
 		
 		System.out.println("/getProduct.do");
 		//Business Logic
@@ -61,22 +61,48 @@ public class ProductController {
 		// Model 과 View 연결
 		model.addAttribute("product", product);
 		
-		return "forward:/product/getProduct.jsp";
+		String menu = request.getParameter("menu");
+		
+		
+		if(menu.equals("search")) {
+			return "forward:/product/getProduct.jsp";
+		}else {
+			//System.out.println("여기야");
+			return "redirect:/updateProductView.do?prodNo="+product.getProdNo()+"&menu=manage";
+		}
 	}
 	
 	@RequestMapping("/updateProduct.do")
-	public String updateProduct( @ModelAttribute("product") Product product , Model model , HttpSession session) throws Exception{
+	public String updateProduct( @ModelAttribute("product") Product product , Model model , HttpServletRequest request, HttpSession session) throws Exception{
 
 		System.out.println("/updateProduct.do");
 		//Business Logic
+		
 		productService.updateProduct(product);
 		
-		int sessionId=((Product)session.getAttribute("product")).getProdNo();
-		if(sessionId == product.getProdNo()){
+		System.out.println("updateProd.do==> req ::: "+request);
+		
+		int reqProdNo = Integer.parseInt(request.getParameter("prodNo"));
+		System.out.println("reqProdNo===>"+reqProdNo);
+		if(reqProdNo == product.getProdNo()){
 			session.setAttribute("product", product);
+			System.out.println("updateProd.do====="+reqProdNo);
 		}
 		
-		return "redirect:/getProduct.do?prodNo="+product.getProdNo();
+		return "redirect:/getProduct.do?prodNo="+reqProdNo+"&menu=ok";
+	}
+	
+	@RequestMapping("/updateProductView.do")
+	public String updateProductView( @RequestParam("prodNo") int prodNo , Model model ) throws Exception{
+
+		System.out.println("/updateProductView.do");
+		
+		//Business Logic
+		Product product = productService.getProduct(prodNo);
+		// Model 과 View 연결
+		model.addAttribute("product", product);
+		System.out.println(product);
+		return "forward:/product/updateProduct.jsp";
 	}
 	
 	@RequestMapping("/listProduct.do")
@@ -99,6 +125,7 @@ public class ProductController {
 		model.addAttribute("list", map.get("list"));
 		model.addAttribute("resultPage", resultPage);
 		model.addAttribute("search", search);
+		
 		
 		return "forward:/product/listProduct.jsp";
 	}

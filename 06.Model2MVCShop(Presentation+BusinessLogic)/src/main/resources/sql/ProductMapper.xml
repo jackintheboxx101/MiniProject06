@@ -10,6 +10,7 @@
 		<result property = "prodName" column = "prod_name" jdbcType="VARCHAR"/>
 		<result property = "prodDetail" column = "prod_detail" jdbcType="VARCHAR"/>
 		<result property = "manuDate" column = "manufacture_day" jdbcType="VARCHAR"/>
+		<result property = "fileName" column = "image_file" jdbcType="VARCHAR"/>
 		<result property = "price" column = "price" jdbcType="INTEGER"/>
 		<result property = "regDate" column = "reg_date" jdbcType="DATE"/>
  	</resultMap>
@@ -47,10 +48,10 @@
 					<if test="searchCondition != null">
 						<where>
 							<if test="searchCondition == 0 and searchKeyword !='' ">
-								prod_no = #{searchKeyword}   
+								prod_no LIKE '%' || #{searchKeyword} || '%'    
 							</if>
 							<if test="searchCondition == 1 and searchKeyword !='' ">
-								prod_name = #{searchKeyword}  
+								prod_name LIKE '%' || #{searchKeyword} || '%'  
 							</if>
 						</where>
 					</if>
@@ -60,12 +61,13 @@
 	</select>  
 	
 	  <update id = "updateProduct" parameterType = "product">
-		UPDATE prodcut
+		UPDATE product
 		<set>
 			prod_name = #{prodName},
-			prod_detail = #{prod_detail},
-			manufactual_day = #{manuDate},
-			price = #{price}
+			prod_detail = #{prodDetail},
+			manufacture_day = #{manuDate},
+			price = #{price},
+			image_file = #{fileName}
 		</set>
 		WHERE prod_no = #{prodNo}
 	</update>

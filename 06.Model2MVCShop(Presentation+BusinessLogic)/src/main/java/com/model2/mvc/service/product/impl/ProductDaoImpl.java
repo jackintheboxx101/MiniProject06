@@ -52,6 +52,6 @@ public class ProductDaoImpl implements ProductDAO {
 	
 	public void updateProduct(Product product) throws Exception {
 		// TODO Auto-generated method stub
-		sqlSession.update("ProductMapper.updateProject", product);
+		sqlSession.update("ProductMapper.updateProduct", product);
 	}
 }

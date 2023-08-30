@@ -123,10 +123,11 @@ System.out.println("jsp access : " + menu);
 					<td align="center">${i}</td>
 					<td></td>
 
-
+					
 					<td align="left">
 					<c:choose>
-						<c:when test="${menu eq 'manage'}"> 
+						<c:when test="${menu eq 'manage'}">
+							<% System.out.println("seperator : "+menu); %> 
 							<a href="/getProduct.do?prodNo=${product.prodNo}&menu=manage">${product.prodName}</a>
 						</c:when>
 						<c:otherwise>

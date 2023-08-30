@@ -113,8 +113,9 @@
 		<td align="center">
 		   <input type="hidden" id="currentPage" name="currentPage" value=""/>
 	
-			<jsp:include page="../common/pageNavigator.jsp"/>	
-			
+			<jsp:include page="../common/pageNavigator.jsp">	
+				<jsp:param value="User" name="type" />	
+			</jsp:include>
     	</td>
 	</tr>
 </table>
